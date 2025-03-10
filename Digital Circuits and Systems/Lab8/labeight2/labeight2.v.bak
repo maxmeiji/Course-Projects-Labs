@@ -1,0 +1,42 @@
+module labeight2(SW,KEY,LEDR);
+	input [1:0]SW,KEY;
+	output [9:0]LEDR;
+	reg [3:0] Y;
+	reg y;
+	parameter A=4'b0000,B=4'b0001,C=4'b0010,D=4'b0011,E=4'b0100,F=4'b01
+	01,G=4'b0110,H=4'b0111,I=4'b1000;
+	always @(posedge KEY[0])
+	begin
+		if(KEY[0]==1'b1)
+	begin
+		case(Y)
+			A: if(SW[1]==1'b0) begin Y=B; y=0; end
+			else begin Y=F; y=0; end
+			B: if(SW[1]==1'b0) begin Y=C; y=0; end
+			else begin Y=F; y=0; end
+			C: if(SW[1]==1'b0) begin Y=D; y=0; end
+			else begin Y=F; y=0; end
+			D: if(SW[1]==1'b0) begin Y=E; y=1; end
+			else begin Y=F; y=0; end
+			E: if(SW[1]==1'b0) begin Y=E; y=1; end
+			else begin Y=F; y=0; end
+			F: if(SW[1]==1'b0) begin Y=B; y=0; end
+			else begin Y=G; y=0; end
+			G: if(SW[1]==1'b0) begin Y=B; y=0; end
+			else begin Y=H; y=0; end
+			H: if(SW[1]==1'b0) begin Y=B; y=0; end
+			else begin Y=I; y=1; end
+			I: if(SW[1]==1'b0) begin Y=B; y=0; end
+			else begin Y=I; y=1; end
+			default: begin Y=A; y=0; end
+		endcase
+	end
+	if(SW[0]==1'b0)
+	begin
+		Y=A;
+		y=0;
+	end
+	end
+	assign LEDR[3:0]=Y;
+	assign LEDR[9]=y;
+endmodule

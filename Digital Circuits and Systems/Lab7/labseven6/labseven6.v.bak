@@ -1,0 +1,94 @@
+module lab7_6(KEY, SW, LEDR, HEX3, HEX2, HEX1, HEX0);
+input [3:0] KEY;
+input [9:0] SW;
+output [9:9] LEDR;
+output [6:0] HEX3, HEX2, HEX1, HEX0;
+wire reset, clock, select1, change, enable, select2, carry_out;
+reg [7:0] data_a, data_b, data_c, data_d;
+wire [15:0] data_ab, data_cd;
+wire [15:0] data_out;
+reg [15:0] seg_out;
+assign reset = KEY[0];
+assign clock = KEY[1];
+assign select1 = KEY[2];
+assign change = KEY[3];
+assign enable = SW[9];
+assign select2 = SW[8];
+assign LEDR[9] = carry_out;
+always@(posedge clock, negedge reset) begin
+if(~reset) begin
+data_a = 8'd0;
+data_b = 8'd0;
+data_c = 8'd0;
+data_d = 8'd0;
+end
+else begin
+if(enable == 1) begin
+if(select2 == 0) begin
+if(select1 == 0)
+data_a[7:0] = SW[7:0];
+else
+data_b[7:0] = SW[7:0];
+end
+else begin
+if(select1 == 1)
+data_c[7:0] = SW[7:0];
+else
+data_d[7:0] = SW[7:0];
+end
+end
+end
+end
+always@(change) begin
+if(select2 == 0 && change == 1) //SW[8] = 0 and KEY[3] not presse
+d => display A, B
+seg_out[15:0] = {data_a[7:0],data_b[7:0]};
+else if(select2 == 1 && change == 1) //SW[8] = 1 and KEY[3] not pre
+ssed => display C, D
+seg_out[15:0] = {data_c[7:0],data_d[7:0]};
+else if(change == 0) //KEY[3] pressed => display product sum.
+seg_out[15:0] = data_out;
+end
+defined_multiply8 (
+data_a,
+data_b,
+data_ab);
+defined_multiply8 (
+data_c,
+data_d,
+data_cd);
+defined_add8 (
+data_ab,
+data_cd,
+carry_out,
+data_out);
+display7seg(seg_out[15:12],HEX3);
+display7seg(seg_out[11:8],HEX2);
+display7seg(seg_out[7:4],HEX1);
+display7seg(seg_out[3:0],HEX0);
+endmodule
+module display7seg(c,HEX);
+input [3:0] c;
+output reg [6:0] HEX;
+always @(c)
+begin
+case(c)
+4'b0000:HEX[6:0] <= 7'b1000000;//0
+4'b0001:HEX[6:0] <= 7'b1111001;//1
+4'b0010:HEX[6:0] <= 7'b0100100;//2
+4'b0011:HEX[6:0] <= 7'b0110000;//3
+4'b0100:HEX[6:0] <= 7'b0011001;//4
+4'b0101:HEX[6:0] <= 7'b0010010;//5
+4'b0110:HEX[6:0] <= 7'b0000010;//6
+4'b0111:HEX[6:0] <= 7'b1011000;//7
+4'b1000:HEX[6:0] <= 7'b0000000;//8
+4'b1001:HEX[6:0] <= 7'b0011000;//9
+4'b1010:HEX[6:0] <= 7'b0001000;//a
+4'b1011:HEX[6:0] <= 7'b0000011;//b
+4'b1100:HEX[6:0] <= 7'b1000110;//c
+4'b1101:HEX[6:0] <= 7'b0100001;//d
+4'b1110:HEX[6:0] <= 7'b0000110;//e
+4'b1111:HEX[6:0] <= 7'b0001110;//f
+endcase
+end
+endmodule

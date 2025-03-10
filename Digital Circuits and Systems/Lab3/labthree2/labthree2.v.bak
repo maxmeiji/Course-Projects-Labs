@@ -1,0 +1,83 @@
+module labthree2(SW,HEX1,HEX0);
+input [3:0]SW;
+output [6:0]HEX1,HEX0;
+wire z ;
+wire [3:0]y , m; 
+wire  [2:0]b;
+assign y = {1'b0,b};
+//-------------------------
+ comparator   compar1(SW[3],SW[2],SW[1],SW[0],z);
+ circuitA            circuita(SW[2:0],b[2:0]);
+  multi              multi1(z,SW[3:0],y,m);
+ circuitB           hex1(z,HEX1);
+ char_7seg    hex0(m , HEX0 );
+//-------------------------
+endmodule 
+//------------------------------------------
+module comparator(a,b,c,d,q);
+input a,b,c,d;
+output q ;
+wire  q5,q4,q3,q2,q1,q0;
+assign  q = q5|q4|q3|q2|q1|q0;
+assign  q5 = a&~b&c&~d;  //10
+assign  q4 = a&~b&c&d;    //11
+assign  q3 = a&b&~c&~d;  //12
+assign  q2 = a&b&~c&d;  //13
+assign  q1 = a&b&c&~d;  //14
+assign  q0 = a&b&c&d;    //15
+endmodule
+//-----------------------------------------
+module circuitA(a,b);
+input [2:0]a;
+output [2:0]b;
+assign  b[2:0] = (a[2:0] == 3'b010) ?3'b000 :
+                         (a[2:0] == 3'b011) ?3'b001 :
+                         (a[2:0] == 3'b100) ?3'b010 :
+                         (a[2:0] == 3'b101) ?3'b011 :
+                         (a[2:0] == 3'b110) ?3'b100 :
+                          (a[2:0] == 3'b111) ?3'b101 :3'b111;
+endmodule
+//--------------------------------------
+
+module circuitB(a,hex);
+input [0:0]a;
+output [6:0]hex;
+assign  hex[6:0] = (a[0] == 1'b1)? 7'b111_1001 : 7'b100_0000; // 1 - 0
+endmodule
+
+//-----------------------------------------
+module multi(s,x,y,m);
+input s;
+input [3:0]x,y;
+output [3:0]m;
+assign  m[3] = (~s&x[3] ) | (s&y[3]);
+assign  m[2] = (~s&x[2] ) | (s&y[2]);
+assign  m[1] = (~s&x[1] ) | (s&y[1]);
+assign  m[0] = (~s&x[0] ) | (s&y[0]);
+endmodule
+//------------------------------------------
+module char_7seg(sw,hex);
+input [3:0]sw;
+output [6:0]hex;
+// seg = {g,f,e,d,c,b,a};
+// 0 is on and 1 is off
+// ---a----
+// |   |
+// f   b
+// |   |
+// ---g---- 
+// |   |
+// e   c
+// |   |
+// ---d----
+assign hex= (sw[3:0] == 4'b0000 )? 7'b000_0000: // 0
+            (sw[3:0] == 4'b0001 )? 7'b111_1001: //1
+            (sw[3:0] == 4'b0010 )? 7'b010_0100: //2
+            (sw[3:0] == 4'b0011 )? 7'b011_0000: // 3
+            (sw[3:0] == 4'b0100 )? 7'b001_1001: // 4
+            (sw[3:0] == 4'b0101 )? 7'b001_0010: // 5
+            (sw[3:0] == 4'b0110 )? 7'b000_0010: // 6
+            (sw[3:0] == 4'b0111 )? 7'b111_1000: // 7
+            (sw[3:0] == 4'b1000 )? 7'b000_0000: // 8
+            (sw[3:0] == 4'b1001 )? 7'b001_0000: 7'b111_1111; // 9 - black
+endmodule

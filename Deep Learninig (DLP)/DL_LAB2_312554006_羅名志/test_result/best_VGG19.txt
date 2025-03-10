@@ -1,0 +1,3 @@
+model: VGG19
+Train Loss: 0.0466, Train Accuracy: 98.7296%
+Test Loss: 0.6276, Test Accuracy: 88.0000%

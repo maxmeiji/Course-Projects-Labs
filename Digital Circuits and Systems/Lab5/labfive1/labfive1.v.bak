@@ -1,0 +1,94 @@
+module labfive1(KEY,SE,HEX3,HEX2,HEX1,HEX0);
+   input [0:0]KEY;
+	input [1:0]SW;
+   wire [15:0]Q;
+	wire [27:0]w;
+	output HEX3,HEX2,HEX1,HEX0;
+	
+   tff num_1(SW[1],KEY[0],SW[0],Q[0]);
+	tff num_2((SW[1] & Q[0]),KEY[0],SW[0],Q[1]);
+   tff num_3((SW[1] & Q[1] & Q[0]),KEY[0],SW[0],Q[2]); 
+	tff num_4((SW[1] & Q[1] & Q[0] & Q[2]),KEY[0],SW[0],Q[3]); 
+	tff num_5((SW[1] & Q[1] & Q[0] & Q[2] & Q[3]),KEY[0],SW[0],Q[4]); 
+	tff num_6((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4]),KEY[0],SW[0],Q[5]); 
+	tff num_7((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5]),KEY[0],SW[0],Q[6]); 
+	tff num_8((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6]),KEY[0],SW[0],Q[7]); 
+	tff num_9((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7]),KEY[0],SW[0],Q[8]); 
+	tff num_10((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7] & Q[8]),KEY[0],SW[0],Q[9]); 
+	tff num_11((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7] & Q[8] & Q[9]),KEY[0],SW[0],Q[10]); 
+	tff num_12((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7] & Q[8] & Q[9] & Q[10]),KEY[0],SW[0],Q[11]); 
+	tff num_13((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7] & Q[8] & Q[9] & Q[10] & Q[11]),KEY[0],SW[0],Q[12]);  
+	tff num_14((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7] & Q[8] & Q[9] & Q[10] & Q[11] & Q[12]),KEY[0],SW[0],Q[13]); 
+	tff num_15((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7] & Q[8] & Q[9] & Q[10] & Q[11] & Q[12] & Q[13]),KEY[0],SW[0],Q[14]); 
+	tff num_16((SW[1] & Q[1] & Q[0] & Q[2] & Q[3] & Q[4] & Q[5] & Q[6] & Q[7] & Q[8] & Q[9] &Q[10] & Q[11] & Q[12] & Q[13] & Q[14]),KEY[0],SW[0],Q[15]);  
+	
+	
+	hexto7segment(Q[3:0],w[6:0]);
+	hexto7segment(Q[7:4],w[13:7]);
+	hexto7segment(Q[11:8],w[20:14]);
+	hexto7segment(Q[15:12],w[27:21]);
+	
+	assign HEX0=w[6:0];
+	assign HEX1=w[13:7];
+	assign HEX2=w[20:14];
+	assign HEX3=w[27:21];
+
+endmodule
+       
+      
+module tff(t, clk, reset, q);
+
+	input t;
+	input clk;
+	input clr;
+	wire w;
+	output q;
+				
+
+				
+always@(negedge reset)
+    begin
+		if(~reset)
+            q <= 1'b0;
+      else
+            q <= t;
+    end
+
+	 
+always@(posedge clk)
+    begin
+		if(clk && ~t)
+				q=q;
+		if(clk && t)
+				q=~q;
+    end
+
+	 
+endmodule
+
+module hexto7segment(
+    input  [3:0]x,
+    output reg [6:0]z
+    );
+always @*
+ case (x)
+  4'b0000 : z = 7'b1111110 ;  //Hexadecimal 0
+  4'b0001 : z = 7'b0110000 ;            //Hexadecimal 1
+  4'b0010 : z = 7'b1101101 ;   // Hexadecimal 2
+  4'b0011 : z = 7'b1111001 ;  // Hexadecimal 3
+  4'b0100 : z = 7'b0110011 ;  // Hexadecimal 4
+  4'b0101 : z = 7'b1011011 ;   // Hexadecimal 5
+  4'b0110 : z = 7'b1011111 ;  // Hexadecimal 6
+  4'b0111 : z = 7'b1110000 ;  // Hexadecimal 7
+  4'b1000 : z = 7'b1111111 ;              //Hexadecimal 8
+  4'b1001 : z = 7'b1111011 ;            //Hexadecimal 9
+  4'b1010 : z = 7'b1110111 ;   // Hexadecimal A
+  4'b1011 : z = 7'b0011111 ;  // Hexadecimal B
+  4'b1100 : z = 7'b1001110 ;  // Hexadecimal C
+  4'b1101 : z = 7'b0111101 ;  // Hexadecimal D
+  4'b1110 : z = 7'b1001111 ;  // Hexadecimal E
+  4'b1111 : z = 7'b1000111 ;  // Hexadecimal F
+endcase
+
+
+endmodule

@@ -1,0 +1,5 @@
+module labfour3(SW,LEDR);
+input [1:0]SW;
+input [0:0]LEDR;
+
+wire 

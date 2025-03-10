@@ -1,0 +1,3 @@
+model: ResNet50
+Train Loss: 0.2506, Train Accuracy: 92.6711%
+Test Loss: 0.7065, Test Accuracy: 84.0000%
